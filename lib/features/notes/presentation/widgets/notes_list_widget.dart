@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../widgets/toast_widget.dart';
@@ -13,15 +12,15 @@ class NotesListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<NotesCubit, NotesState>(
-       listener: (context, state) {
-        if(state is NotesErrorState){
+      listener: (context, state) {
+        if (state is NotesErrorState) {
           ToastWidget.show(message: state.message, toastType: ToastType.ERROR);
         }
-       } ,
+      },
       builder: (context, state) {
-    final cubic = NotesCubit.get(context);
+        final cubic = NotesCubit.get(context);
         if (state is NotesSuccessState) {
-        final notes = state.notes ;
+          final notes = state.notes;
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
@@ -30,24 +29,28 @@ class NotesListWidget extends StatelessWidget {
                   height: 20,
                 ),
                 Row(
-                  children: const[
-                     FilterButton(),
-                     SearchButtonBar(),
+                  children: const [
+                    FilterButton(),
+                    SearchButtonBar(),
                   ],
                 ),
                 Expanded(
-                  child: ListView.separated(
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: notes.length,
-                    itemBuilder: (context, index) {
-                      final note = notes[index];
-                      return NoteItem(
-                        notesModel: note,
-                      );
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await NotesCubit.get(context).getAllNotes();
                     },
-                    separatorBuilder: (context, index) {
-                      return const Divider();
-                    },
+                    child: ListView.separated(
+                      itemCount: notes.length,
+                      itemBuilder: (context, index) {
+                        final note = notes[index];
+                        return NoteItem(
+                          notesModel: note,
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return const Divider();
+                      },
+                    ),
                   ),
                 )
               ],

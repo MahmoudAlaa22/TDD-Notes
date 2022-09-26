@@ -4,6 +4,7 @@ import '../../../../utils/navigator.dart';
 import '../../../../utils/app_screen_size.dart';
 
 import '../../../../core/constant/strings.dart';
+import '../bloc/cubit/notes_cubit.dart';
 import '../widgets/notes_list_widget.dart';
 
 class NotesPage extends StatelessWidget {
